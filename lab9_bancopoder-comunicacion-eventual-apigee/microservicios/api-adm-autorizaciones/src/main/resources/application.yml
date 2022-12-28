@@ -1,0 +1,55 @@
+server:  
+  port: ${PORT:8080}
+
+instance.id: ${random.value}
+
+
+ribbon:
+  eureka:
+    enabled: true
+
+management:
+  security:
+    enabled: false #desactiva mecaniscos de actuator de spring
+
+security:
+  basic:
+    enabled: false
+
+
+feign:
+    hystrix:
+        enabled: true
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    url: jdbc:postgresql://postgres-db-svc:5432/banca_administracion
+
+  jpa:
+    hibernate:
+      ddlAuto: validate
+      namingStrategy: org.hibernate.cfg.EJB3NamingStrategy
+    show-sql: true
+    
+# RabbitMQ properties
+  rabbitmq:
+   addresses: rabbitmq:5672
+   adminAddresses: http://rabbit-rabbitmq:15672
+   nodes: rabbit@rabbitmq
+   username: guest
+   password: guest
+   virtual_host: /
+   useSSL: false
+   sslProperties:
+   ssl:
+     keyStore:
+     keyStorePassphrase:
+     trustStore:
+     trustStorePassphrase:
+   channelCacheSize: 100
+
+
+

@@ -1,0 +1,24 @@
+
+server:  
+  port: ${PORT:8080}
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    #url: jdbc:postgresql://localhost:5432/seguros_guadalupe
+    url: jdbc:postgresql://postgres-db-svc:5432/seguros_guadalupe
+
+  jpa:
+    hibernate:
+      ddlAuto: validate
+      namingStrategy: org.hibernate.cfg.EJB3NamingStrategy
+    show-sql: true
+
+feign:
+    hystrix:
+        enabled: true
+
+
+

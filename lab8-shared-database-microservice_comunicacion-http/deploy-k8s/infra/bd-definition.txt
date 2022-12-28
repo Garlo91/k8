@@ -1,0 +1,2 @@
+CREATE DATABASE seguros_guadalupe;
+CREATE DATABASE seguros_guadalupe_administracion;

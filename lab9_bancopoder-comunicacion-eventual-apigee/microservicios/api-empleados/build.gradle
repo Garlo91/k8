@@ -1,0 +1,81 @@
+buildscript {
+  ext {
+    springBootVersion = '1.5.10.RELEASE'
+  }
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.3")
+    classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+
+group = 'com.banco.poder.empleados'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+jar {
+  baseName = 'api-empleados'
+  version = ''
+}
+
+repositories {
+  mavenCentral()
+}
+
+ext {
+  springBootAdminVersion = '1.5.7'
+  springCloudVersion = 'Edgware.SR2'
+}
+
+dependencies {
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compile('org.springframework.boot:spring-boot-starter-data-jpa')
+  runtime('org.postgresql:postgresql')
+  compile('org.flywaydb:flyway-core')
+  compile('org.springframework.cloud:spring-cloud-starter-hystrix')
+  compile('org.springframework.cloud:spring-cloud-starter-hystrix-dashboard')
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+  }
+}
+
+task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+  destFile = project.file('build/libs/Dockerfile')
+  from 'openjdk:8u151-jre-slim'
+  maintainer 'jovaniac@gmail.com"'
+  copyFile 'api-empleados.jar', '/opt/api-empleados.jar'
+
+  exposePort 8080
+  entryPoint 'java', '-Djava.security.egd=file:/dev/./urandom', '-jar', '/opt/api-empleados.jar'
+}
+
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  dependsOn createDockerfile
+  inputDir = createDockerfile.destFile.parentFile
+  tag = 'ibracoder/ms-empleados-http:' + project.version.toLowerCase()
+}
+
+task pushImage(type: com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
+  dependsOn buildImage
+  imageName = buildImage.tag
+}
+
+createDockerfile.dependsOn bootRepackage

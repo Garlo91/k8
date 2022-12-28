@@ -1,0 +1,5 @@
+CREATE DATABASE seguros_guadalupe;
+CREATE DATABASE banca_administracion;
+CREATE DATABASE banco_poder_clientes;
+CREATE DATABASE banco_poder_empleados;
+CREATE DATABASE banco_poder_creditos;

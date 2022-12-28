@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-seguros-adm-event-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-seguros-adm-event
+      tier: microservicio
+  template:
+    metadata:
+      labels:
+        app: ms-seguros-adm-event
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-seguros-adm-event-image
+        image: ibracoder/api-administracion-event:0.0.1-snapshot
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

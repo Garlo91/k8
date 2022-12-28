@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ms-seguros-adm-deploy
+  namespace: default
+  labels:
+    app:  ms-seguros-adm-deploy
+spec:
+  selector:
+    matchLabels:
+      app: ms-seguros-adm
+      tier: microservicio
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  ms-seguros-adm
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-seguros-adm-image
+        image: ibracoder/api-seguros-guadalupe-administracion-k8s:0.0.1-snapshot
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 512m
+            memory: 1024Mi
+          limits:
+            cpu: 512m
+            memory: 1024Mi
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 90
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+#        readinessProbe:
+#          httpGet:
+#            path: /_status/healthz
+#            port: 8080
+#          initialDelaySeconds: 5
+#          timeoutSeconds: 2
+#          successThreshold: 1
+#          failureThreshold: 3
+#          periodSeconds: 10
+#        env:
+#        - name: DB_HOST
+#          valueFrom:
+#            configMapKeyRef:
+#              name: config-map-ms
+#              key: DB_HOST
+        ports:
+        - containerPort:  8080
+          name:  ms-seguros-adm
+      restartPolicy: Always
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ms-seguros-adm-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ms-seguros-adm-deploy
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70

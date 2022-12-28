@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-empleados-http-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-empleados-http
+      tier: microservicio
+  template:
+    metadata:
+      labels:
+        app: ms-empleados-http
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-empleados-http-image
+        image: ibracoder/ms-empleados-http:0.0.1-snapshot
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

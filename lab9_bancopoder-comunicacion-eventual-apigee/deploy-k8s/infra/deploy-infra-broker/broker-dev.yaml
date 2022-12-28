@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+      tier: broker-msj
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        tier: broker-msj
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq      
+        ports:
+        - containerPort: 5672  

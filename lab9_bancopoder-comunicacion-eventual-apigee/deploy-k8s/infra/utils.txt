@@ -1,0 +1,26 @@
+
+Conectarse a postgress:
+
+kubectl exec -it postgres-db-dep-85b88dc4fb-dfgpw -- psql --username postgres
+
+
+comandos postgres
+
+\l
+\c nombre_db
+\d
+SELEC * FROM ?;
+
+Obtener ayuda:
+
+\h
+
+Quit
+
+\q
+
+
+
+SALIR 
+\q 
+

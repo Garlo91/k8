@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-seguros-http-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-seguros-http
+      tier: microservicio
+  template:
+    metadata:
+      labels:
+        app: ms-seguros-http
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-seguros-http-image
+        image: ibracoder/api-seguros-guadalupe-http:0.0.1-snapshot
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

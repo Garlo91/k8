@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-creditos-event-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  ms-creditos-event
+      tier: microservicio
+  template:
+    metadata:
+      labels:
+        app: ms-creditos-event
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-creditos-event-image
+        image: ibracoder/api-creditos-event:0.0.1-snapshot
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080

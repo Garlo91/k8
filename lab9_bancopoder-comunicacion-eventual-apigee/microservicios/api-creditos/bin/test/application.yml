@@ -1,0 +1,57 @@
+
+server:  
+  port: ${PORT:8085}
+
+instance.id: ${random.value}
+
+eureka:
+  client:
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true #registra ip no hostname
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    metadata-map:
+      instanceId: ${instance.id}
+  server:
+    enableSelfPreservation: false
+  
+ribbon:
+  eureka:
+    enabled: true
+
+management:
+  security:
+    enabled: false #desactiva mecaniscos de actuator de spring
+
+security:
+  basic:
+    enabled: false
+
+
+feign:
+    hystrix:
+        enabled: true
+
+
+spring:
+  boot:
+      admin:
+         url: http://localhost:8090/
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:5432/banco_poder_creditos
+
+  jpa:
+    hibernate:
+      ddlAuto: validate
+      namingStrategy: org.hibernate.cfg.EJB3NamingStrategy
+    show-sql: true
+
+
+
