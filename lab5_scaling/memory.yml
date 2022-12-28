@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-empleados-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ms-empleados
+      tier: microservicio
+  template:
+    metadata:
+      labels:
+        app: ms-empleados
+        tier: microservicio
+    spec:
+      containers:
+      - name: ms-empleados-image
+        image: ibracoder/bits-entrada:0.0.1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+        ports:
+        - containerPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ms-empleados-svc
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8081
+    name: http
+  selector:
+    app: ms-empleados
+    tier: microservicio
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ms-seguros-adm-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ms-empleados-deploy
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 50
