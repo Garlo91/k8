@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-db-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-db
+      tier: database
+  template:
+    metadata:
+      labels:
+        app: postgres-db
+        tier: database
+    spec:
+      containers:
+      - name: postgres-db
+        image: postgres:9.6.1-alpine
+        imagePullPolicy: Always
+        env:
+        - name: POSTGRES_USER
+          value: admin
+        - name: POSTGRES_PASSWORD
+          value: admin
+        - name: POSTGRES_DB
+          value: banco_poder_empleados
+        - name: PGDATA
+          value: /var/lib/postgresql/data/postgres
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: postgres-db-volume
+          mountPath: /var/lib/postgresql/data/postgres
+      volumes:
+        - name: postgres-db-volume
+          persistentVolumeClaim:
+            claimName: postgres-db-pvc-claim

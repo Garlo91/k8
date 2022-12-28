@@ -1,0 +1,51 @@
+
+Conectarse a postgress:
+
+kubectl exec -it postgres-db-dep-85b88dc4fb-dfgpw -- psql --username postgres
+
+\l
+\c nombre_db
+\d
+SELEC * FROM EMPLEADOS;
+
+comandos postgres
+
+Obtener ayuda:
+
+\h
+
+Quit
+
+\q
+
+List databases:
+
+\l
+
+List tables in database:
+
+\d
+
+Describe table:
+
+\d table_name
+
+Describe table:
+
+\d+ table_name
+
+Use database_name:
+
+\c nombre_db
+
+Show users:
+
+select * from "pg_user";
+# también
+\du
+
+Escribir las consultas en tu editor favorito:
+
+\e
+
+
