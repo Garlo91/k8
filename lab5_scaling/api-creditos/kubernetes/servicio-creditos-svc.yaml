@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-creditos
+spec:
+  type: LoadBalancer
+  selector:
+    app: servicio-creditos
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
+
+
+    

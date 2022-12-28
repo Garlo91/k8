@@ -1,0 +1,30 @@
+
+server:  
+  port: ${PORT:8081}
+  management.port: 9091 #spring boot admin
+
+spring:  
+  application:
+name: servicio-cliente
+
+
+instance.id: ${random.value}
+
+
+management:
+  security:
+    enabled: false
+
+security:
+  basic:
+    enabled: false
+
+#
+
+#influx:
+#  host: localhost
+#  port: 8086
+#  user: admin
+#  password: admin
+#  database: grafana
+    
