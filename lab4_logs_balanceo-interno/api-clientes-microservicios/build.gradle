@@ -1,0 +1,99 @@
+buildscript {
+  ext {
+    springBootVersion = '1.5.10.RELEASE'
+  }
+  repositories {
+    jcenter()
+    mavenCentral()
+  }
+  dependencies {
+    classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.3")
+    classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
+apply plugin: 'org.asciidoctor.convert'
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+
+
+group = 'com.microservicios.clientes'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+jar {
+  baseName = 'servicio-cliente'
+  version = ''
+}
+
+
+repositories {
+  mavenCentral()
+}
+
+
+asciidoctor {
+  sourceDir 'src/main/asciidoc'
+  attributes  \
+       'snippets': file('build/snippets'),
+          'toc': 'left'
+}
+
+ext {
+  springBootAdminVersion = '1.5.7'
+  springCloudVersion = 'Edgware.SR2'
+}
+
+dependencies {
+  
+  compile('org.springframework.boot:spring-boot-starter-actuator')
+  compile('org.springframework.boot:spring-boot-starter-web')
+  compile 'org.springframework.cloud:spring-cloud-starter-openfeign'
+  compile('de.codecentric:spring-boot-admin-starter-client') //spring boot ui
+  testCompile('org.springframework.boot:spring-boot-starter-test')
+  testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
+    
+  compile('org.jadira.usertype:usertype.extended:5.0.0.GA')
+  compile 'com.uber.jaeger:jaeger-core:0.18.0'
+
+  //Metricas
+  runtime 'org.jolokia:jolokia-core'
+  compile 'org.influxdb:influxdb-java:2.7'
+  compile 'io.dropwizard.metrics:metrics-core'
+
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "de.codecentric:spring-boot-admin-dependencies:${springBootAdminVersion}"
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+  }
+}
+task createDockerfile(type: com.bmuschko.gradle.docker.tasks.image.Dockerfile) {
+  destFile = project.file('build/libs/Dockerfile')
+  from 'openjdk:8u151-jre-slim'
+  maintainer 'alberto.pedraza.casasola@gmail.com"'
+  copyFile 'servicio-cliente.jar', '/opt/servicio-cliente.jar'
+
+  exposePort 8081
+  entryPoint 'java', "-Djava.awt.headless=true", "-Xms256m", "-Xmx256m", '-jar', '/opt/servicio-cliente.jar'
+}
+
+task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+  dependsOn createDockerfile
+  inputDir = createDockerfile.destFile.parentFile
+  tag = 'ibracoder/servicio-cliente:' + project.version.toLowerCase()
+}
+
+task pushImage(type: com.bmuschko.gradle.docker.tasks.image.DockerPushImage) {
+  dependsOn buildImage
+  imageName = buildImage.tag
+}
+
+createDockerfile.dependsOn bootRepackage

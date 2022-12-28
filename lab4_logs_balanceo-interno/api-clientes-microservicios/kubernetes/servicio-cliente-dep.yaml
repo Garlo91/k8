@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicio-cliente
+  labels:
+    app: servicio-cliente
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: servicio-cliente
+  template:
+    metadata:
+      labels:
+        app: servicio-cliente
+    spec:
+      containers:
+        - name: servicio-cliente
+          image: ibracoder/servicio-cliente:0.0.1-snapshot
+          ports:
+            - containerPort: 8081
