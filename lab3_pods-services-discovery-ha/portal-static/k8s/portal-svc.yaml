@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: portalweb
+spec:
+  type: LoadBalancer
+  selector:
+    # Esta etiqueta la usa k8s para buscar el pod
+    # al que le enviara el trafico..
+    app: portalweb
+  ports:
+  - protocol: TCP
+    port: 80

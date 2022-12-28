@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portalweb
+  labels:
+    app: portalweb
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: portalweb
+  template:
+    metadata:
+      labels:
+        app: portalweb
+    spec:
+      containers:
+        - name: portalweb
+          image: ibracoder/miweb:0.0.1
+          ports:
+            - containerPort: 80

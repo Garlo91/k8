@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: holamundo
+spec:
+  type: LoadBalancer
+  selector:
+    # Esta etiqueta la usa k8s para buscar el pod
+    # al que le enviara el trafico.
+    app: holamundo
+  ports:
+  - protocol: TCP
+    port: 5000
